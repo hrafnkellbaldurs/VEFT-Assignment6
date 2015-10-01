@@ -33,9 +33,9 @@ namespace CoursesAPI.Controllers
 
         /// <summary>
         /// This method represents a get request for a single course.
-        /// It is only accessible as an authenticated user (teacher or student)
+        /// It is only accessible as an authenticated user.
         /// </summary>
-        /// <returns>StatusCode 200</returns>
+        /// <returns>StatusCode 401 if unauthorized, StatusCode 200 otherwise</returns>
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult GetCoursesByID()
@@ -45,9 +45,9 @@ namespace CoursesAPI.Controllers
 
         /// <summary>
         /// This method represents a post request for a single course. 
-        /// It is only accessible as an authenticated user (teacher only)
+        /// It is only accessible as an authenticated user.
         /// </summary>
-        /// <returns>StatusCode 401 if unauthorized, StatusCode 201 else</returns>
+        /// <returns>StatusCode 401 if unauthorized, StatusCode 201 otherwise</returns>
         [HttpPost]
 		[Route("")]
 		public IHttpActionResult AddCourse()
