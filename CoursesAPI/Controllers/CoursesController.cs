@@ -1,11 +1,14 @@
-﻿using System.Web.Http;
+﻿using System.Net;
+using System.Web.Http;
 using CoursesAPI.Models;
 using CoursesAPI.Services.DataAccess;
 using CoursesAPI.Services.Services;
 
+
 namespace CoursesAPI.Controllers
 {
-	[RoutePrefix("api/courses")]
+    [Authorize]
+    [RoutePrefix("api/courses")]
 	public class CoursesController : ApiController
 	{
 		private readonly CoursesServiceProvider _service;
@@ -15,26 +18,41 @@ namespace CoursesAPI.Controllers
 			_service = new CoursesServiceProvider(new UnitOfWork<AppDataContext>());
 		}
 
+        /// <summary>
+        /// This method represents a get request for all courses.
+        /// It is accessible to everyone.
+        /// </summary>
+        /// <returns>StatusCode 200</returns>
 		[HttpGet]
 		[AllowAnonymous]
-		public IHttpActionResult GetCoursesBySemester(string semester = null, int page = 1)
+        [Route("")]
+        public IHttpActionResult GetCourses()
 		{
-			// TODO: figure out the requested language (if any!)
-			// and pass it to the service provider!
-			return Ok(_service.GetCourseInstancesBySemester(semester, page));
+			return Ok();
 		}
 
-		/// <summary>
-		/// </summary>
-		/// <param name="id"></param>
-		/// <param name="model"></param>
-		/// <returns></returns>
-		[HttpPost]
-		[Route("{id}/teachers")]
-		public IHttpActionResult AddTeacher(int id, AddTeacherViewModel model)
+        /// <summary>
+        /// This method represents a get request for a single course.
+        /// It is only accessible as an authenticated user (teacher or student)
+        /// </summary>
+        /// <returns>StatusCode 200</returns>
+        [HttpGet]
+        [Route("{id}")]
+        public IHttpActionResult GetCoursesByID()
+        {
+            return Ok();
+        }
+
+        /// <summary>
+        /// This method represents a post request for a single course. 
+        /// It is only accessible as an authenticated user (teacher only)
+        /// </summary>
+        /// <returns>StatusCode 401 if unauthorized, StatusCode 201 else</returns>
+        [HttpPost]
+		[Route("")]
+		public IHttpActionResult AddCourse()
 		{
-			var result = _service.AddTeacherToCourse(id, model);
-			return Created("TODO", result);
+			return StatusCode(HttpStatusCode.Created);
 		}
 	}
 }
