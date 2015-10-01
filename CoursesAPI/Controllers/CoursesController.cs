@@ -4,7 +4,6 @@ using CoursesAPI.Models;
 using CoursesAPI.Services.DataAccess;
 using CoursesAPI.Services.Services;
 
-
 namespace CoursesAPI.Controllers
 {
     [Authorize]
