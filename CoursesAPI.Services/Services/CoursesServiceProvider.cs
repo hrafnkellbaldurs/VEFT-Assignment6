@@ -27,24 +27,6 @@ namespace CoursesAPI.Services.Services
 		}
 
 		/// <summary>
-		/// You should implement this function, such that all tests will pass.
-		/// </summary>
-		/// <param name="courseInstanceID">The ID of the course instance which the teacher will be registered to.</param>
-		/// <param name="model">The data which indicates which person should be added as a teacher, and in what role.</param>
-		/// <returns>Should return basic information about the person.</returns>
-		public PersonDTO AddTeacherToCourse(int courseInstanceID, AddTeacherViewModel model)
-		{
-			var course = _courseInstances.All().SingleOrDefault(x => x.ID == courseInstanceID);
-			if (course == null)
-			{
-				throw new AppObjectNotFoundException(ErrorCodes.INVALID_COURSEINSTANCEID);
-			}
-
-			// TODO: implement this logic!
-			return null;
-		}
-
-		/// <summary>
 		/// You should write tests for this function. You will also need to
 		/// modify it, such that it will correctly return the name of the main
 		/// teacher of each course.
@@ -52,7 +34,7 @@ namespace CoursesAPI.Services.Services
 		/// <param name="semester"></param>
 		/// <param name="page">1-based index of the requested page.</param>
 		/// <returns></returns>
-		public List<CourseInstanceDTO> GetCourseInstancesBySemester(string semester = null, int page = 1)
+		public List<CourseInstanceDTO> GetCourseInstancesBySemester(string semester = null)
 		{
 			if (string.IsNullOrEmpty(semester))
 			{
@@ -64,13 +46,40 @@ namespace CoursesAPI.Services.Services
 				where c.SemesterID == semester
 				select new CourseInstanceDTO
 				{
-					Name               = ct.Name, // TODO: select the name based on the language requested (if any)
+					Name               = ct.Name, 
 					TemplateID         = ct.CourseID,
 					CourseInstanceID   = c.ID,
-					MainTeacher        = "" // Hint: it should not always return an empty string!
+					MainTeacher        = "" 
 				}).ToList();
 
 			return courses;
 		}
-	}
+
+
+        /// <summary>
+		/// Finds and returns a list 
+		/// </summary>
+		/// <param name="id">The id of the course instance to get</param>
+		/// <returns></returns>
+		public CourseInstanceDTO GetCourseInstancesById(int id)
+        {
+            var course = (from c in _courseInstances.All()
+                           join ct in _courseTemplates.All() on c.CourseID equals ct.CourseID
+                           where c.ID == id
+                           select new CourseInstanceDTO
+                           {
+                               Name = ct.Name, 
+                               TemplateID = ct.CourseID,
+                               CourseInstanceID = c.ID,
+                               MainTeacher = "" 
+                           }).SingleOrDefault();
+
+            if (course == null)
+            {
+                throw new AppObjectNotFoundException();
+            }
+
+            return course;
+        }
+    }
 }
